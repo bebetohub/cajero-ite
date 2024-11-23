@@ -1,35 +1,73 @@
 <template>
-    <template>
   <div>
     <h2>Realizar Depósito</h2>
     <form @submit.prevent="realizarDeposito">
-      <label>Monto:</label>
-      <input type="number" v-model="monto" />
+      <label for="monto">Monto:</label>
+      <input 
+        id="monto" 
+        type="number" 
+        v-model.number="monto" 
+        placeholder="Ingresa el monto"
+        min="1" 
+        required 
+      />
       <button type="submit">Depositar</button>
     </form>
   </div>
 </template>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      cuenta: Object
-    },
-    data() {
-      return {
-        monto: 0
+
+<script>
+export default {
+  props: {
+    cuenta: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    return {
+      monto: 0
+    };
+  },
+  methods: {
+    realizarDeposito() {
+      if (this.monto <= 0) {
+        alert("El monto debe ser mayor a 0.");
+        return;
       }
-    },
-    methods: {
-        realizarDeposito() {
-      // Lógica para realizar el depósito
-      // Actualiza el saldo de la cuenta
-      this.$emit('actualizar-saldo', this.monto) // Emite un evento
-      //this.cuenta.balance += this.monto
-      // Emite un evento para notificar que se realizó el depósito
-      this.$emit('deposito-realizado')
-    },
+
+      // Emite el evento para actualizar el saldo
+      this.$emit('actualizar-saldo', this.monto);
+
+      // Emite el evento para notificar que se realizó el depósito
+      this.$emit('deposito-realizado');
+
+      // Resetea el campo de monto
+      this.monto = 0;
+
+      alert("Depósito realizado con éxito.");
     }
   }
-  </script>
+};
+</script>
+
+<style scoped>
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+</style>

@@ -1,73 +1,100 @@
 <template>
-  <div>
-    <h1>CAJERO ELECTRONICO ITEC</h1>
-    <!--paso 3 incorporar al componente deseado-->
+  <div id="app">
+    <div class="header">
+      <h1>💳 Cajero Electrónico ITEC</h1>
+    </div>
 
-    <MiComponente />
-    
-    <VerificacionTarjeta v-if="pantalla === 'verificarTarjeta'" :cuentas="accounts" @verify-card="verifyCard" />
-    <VerificarPin v-else-if="pantalla==='verificarPin'" :cuentas="accounts" :account="currentAccount" @pin-verified="pinVerified" />
-    <MenuPrincipal v-else-if="pantalla==='menuPrincipal'" :cuentaactual="currentAccount" @actualizar-saldo="actualizarSaldo($event)" />
+    <!-- Renderizado dinámico de componentes según la pantalla -->
+    <div class="content">
+      <VerificacionTarjeta v-if="pantalla === 'verificarTarjeta'" :cuentas="accounts" @verify-card="verifyCard" />
+      <VerificarPin v-else-if="pantalla === 'verificarPin'" :cuentas="accounts" :account="currentAccount"
+        @pin-verified="pinVerified" />
+      <MenuPrincipal v-else-if="pantalla === 'menuPrincipal'" :cuentaactual="currentAccount"
+        @actualizar-saldo="actualizarSaldo" />
+    </div>
   </div>
 </template>
 
 <script>
-// Paso 1: Importar los componentes
-import MiComponente from './components/MiComponente.vue';
 import VerificacionTarjeta from './components/VerificacionTarjeta.vue';
 import VerificarPin from './components/VerificarPin.vue';
 import MenuPrincipal from './components/MenuPrincipal.vue';
-//import EjemploDirectiva from './components/EjemploDirectiva.vue';
 
-
-// Paso 2: Exportar la respuesta que tiene para invocar al componente,
-//ademas se debe definir los datos, los metodos
 export default {
   name: 'App',
   components: {
-    MiComponente,
     VerificacionTarjeta,
     VerificarPin,
     MenuPrincipal
-    //EjemploDirectiva,
   },
-
-  // Aquí comienza la definición de la data y otros métodos
   data() {
     return {
       accounts: [
-        { cardNumber: '1234567', pin: '1234', balance: 1000 },
-        { cardNumber: '8765432187654321', pin: '5678', balance: 2000 },
+        { cardNumber: '4111111111111111', pin: '1234', balance: 1000 },
+        { cardNumber: '5500000000000004', pin: '5678', balance: 2000 },
       ],
       currentAccount: null,
-      pantalla:'verificarTarjeta',
+      pantalla: 'verificarTarjeta'
     };
   },
   methods: {
     verifyCard(cardNumber) {
-      //console.log(cardNumber +"\n" + this.accounts[0].cardNumber);
-      this.currentAccount = this.accounts.find(acc => acc.cardNumber === cardNumber) || null;
-      console.log(this.currentAccount);
-      this.pantalla = 'verificarPin';
-      //console.log(this.currentAccount + "\n");
+      this.currentAccount =
+        this.accounts.find((acc) => acc.cardNumber === cardNumber) || null;
+      if (this.currentAccount) {
+        this.pantalla = 'verificarPin';
+      }
     },
-    pinVerified(){
-      this.pantalla='menuPrincipal';
+    pinVerified() {
+      this.pantalla = 'menuPrincipal';
     },
     actualizarSaldo(monto) {
-      this.currentAccount.balance += monto
+      if (this.currentAccount) {
+        this.currentAccount.balance += monto;
+      }
     }
-  },
+  }
 };
 </script>
 
-<style>
+<style scoped>
+/* Estilo general */
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  font-family: 'Arial', sans-serif;
   color: #2c3e50;
-  margin-top: 60px;
+  background-color: #f4f4f9;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+/* Encabezado */
+.header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 20px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  font-size: 2rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Contenido principal */
+.content {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  margin-top: 20px;
 }
 </style>
